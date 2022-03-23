@@ -14,5 +14,7 @@ class Constants {
         const val ZendeskNotInitializedDescription = "Zendesk was not initialize. Call initialize method first"
         const val LoginArgumentsErrorDescription = "jwt as String argument was expected"
         const val InitializeArgumentsErrorDescription = "channel key as String argument was expected"
+        const val IdKey = "id"
+        const val ExternalIdKey = "externalId"
     }
 }

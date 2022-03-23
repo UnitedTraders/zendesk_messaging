@@ -51,7 +51,7 @@ class ZendeskMessaging {
         Zendesk.instance.loginUser(
                 jwt,
                 successCallback = {
-                    result.success(null)
+                    result.success(mapOf(Constants.IdKey to it.id, Constants.ExternalIdKey to it.externalId))
                 },
                 failureCallback = {
                     result.error(Constants.ZendeskLoginFailureCode, "Something went wrong on zendesk login stage", it.localizedMessage)

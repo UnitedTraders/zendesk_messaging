@@ -44,8 +44,8 @@ class ZendeskMessaging {
             switch result {
             case .failure(let error):
                 flutterResult(ErrorUtils.buildError(title: Constants.ZendeskLoginFailureCode, details: error.localizedDescription))
-            case .success(_):
-                flutterResult(nil)
+            case .success(let it):
+                flutterResult([Constants.IdKey: it.id, Constants.ExternalIdKey: it.externalId])
             }
         })
     }

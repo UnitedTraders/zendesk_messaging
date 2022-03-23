@@ -21,4 +21,6 @@ struct Constants {
     static let ShowViewCommand = "showZendesk"
     static let LoginArgumentsErrorDescription = "jwt as String argument was expected"
     static let InitializeArgumentsErrorDescription = "channel key as String argument was expected"
+    static let IdKey = "id"
+    static let ExternalIdKey = "externalId"
 }
