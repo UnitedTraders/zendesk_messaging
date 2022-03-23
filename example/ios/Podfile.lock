@@ -1,0 +1,65 @@
+PODS:
+  - Flutter (1.0.0)
+  - Zendesk (1.2.2):
+    - ZendeskSDKConversationKit (~> 1.0.1)
+  - zendesk_messaging (0.0.1):
+    - Flutter
+    - ZendeskSDKMessaging
+  - ZendeskSDKConversationKit (1.0.1):
+    - ZendeskSDKFayeClient (~> 1.0.0)
+    - ZendeskSDKHTTPClient (~> 0.6.0)
+    - ZendeskSDKStorage (~> 0.4.4)
+  - ZendeskSDKFayeClient (1.0.0):
+    - ZendeskSDKLogger (~> 0.4.3)
+    - ZendeskSDKSocketClient (~> 1.0.0)
+  - ZendeskSDKHTTPClient (0.6.0):
+    - ZendeskSDKLogger (~> 0.4.3)
+  - ZendeskSDKLogger (0.4.3)
+  - ZendeskSDKMessaging (2.2.3):
+    - Zendesk (~> 1.2.2)
+    - ZendeskSDKConversationKit (~> 1.0.1)
+    - ZendeskSDKUIComponents (~> 1.0.0)
+  - ZendeskSDKSocketClient (1.0.0):
+    - ZendeskSDKLogger (~> 0.4.3)
+  - ZendeskSDKStorage (0.4.4):
+    - ZendeskSDKLogger (~> 0.4.3)
+  - ZendeskSDKUIComponents (1.0.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - zendesk_messaging (from `.symlinks/plugins/zendesk_messaging/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Zendesk
+    - ZendeskSDKConversationKit
+    - ZendeskSDKFayeClient
+    - ZendeskSDKHTTPClient
+    - ZendeskSDKLogger
+    - ZendeskSDKMessaging
+    - ZendeskSDKSocketClient
+    - ZendeskSDKStorage
+    - ZendeskSDKUIComponents
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  zendesk_messaging:
+    :path: ".symlinks/plugins/zendesk_messaging/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Zendesk: 8615fbba65fb9921586cf0216785fc11a9ac88af
+  zendesk_messaging: 21890b6e72983391ef828e08f739296a2eb02f27
+  ZendeskSDKConversationKit: 75ac59e7d68a7cfc3baef62024a6fec56f09dc57
+  ZendeskSDKFayeClient: 033b5962a15e1512943b2266d7494438578ed4bb
+  ZendeskSDKHTTPClient: bcdf5f283b67a1951687fcd4cc452213226b127c
+  ZendeskSDKLogger: 1eb208475583b94571d651f74a70e7d762cdfa1c
+  ZendeskSDKMessaging: abfc30c9e7c80d2a79bc5895fe7007e5ae02e4bd
+  ZendeskSDKSocketClient: aa939d3b4a40f1183305262b575d4e390ce86bd3
+  ZendeskSDKStorage: b310557446bbfd7508c0500fea0cf29d2c7692bd
+  ZendeskSDKUIComponents: 20912879bb243721fa1955cf1e200d0b782a8508
+
+PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+
+COCOAPODS: 1.11.2
