@@ -64,7 +64,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _tryInitializeZendesk() async {
     try {
-      await ZendeskMessaging.initializeZendesk(_channelKeyController.value.text);
+      await ZendeskMessaging.initializeZendesk(
+        androidChannelKey: _channelKeyController.value.text,
+        iosChannelKey: _channelKeyController.value.text,
+      );
 
       setState(() {
         _isInitialized = true;
