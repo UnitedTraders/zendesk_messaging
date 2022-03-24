@@ -1,6 +1,6 @@
 name: zendesk_messaging
 description: Zendesk Messaging flutter plugin
-version: 0.0.3
+version: 0.1.0
 homepage:
 environment:
   sdk: ">=2.13.0 <3.0.0"
