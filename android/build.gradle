@@ -2,7 +2,7 @@ group 'com.unitedtraders.mobile.zendesk_messaging'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.6.0'
+    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         mavenCentral()
@@ -10,7 +10,6 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -47,6 +46,5 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "zendesk.messaging:messaging-android:2.2.0"
+    implementation "zendesk.messaging:messaging-android:2.1.0"
 }
