@@ -26,9 +26,9 @@ class ZendeskMessaging {
   ///
   /// throws PlatformException if something went wrong on platform/zendesk side
   static Future<UserIds> loginUser(String jwt) async {
-    final Map<String, String?> result = await _channel.invokeMethod('zendeskLogin', jwt);
+    final Map<Object?, Object?> result = await _channel.invokeMethod('zendeskLogin', jwt);
 
-    return UserIds(result['id'], result['externalId']);
+    return UserIds(result['id'] as String, result['externalId'] as String);
   }
 
   /// Attempt to logout user. Call only after initializing zendesk complete and if user is logged in
