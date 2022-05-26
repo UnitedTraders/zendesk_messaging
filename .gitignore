@@ -1,9 +1,5 @@
 # See https://www.dartlang.org/guides/libraries/private-files
 
-# Files and directories created by pub
-.dart_tool/
-.packages
-build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -26,10 +22,6 @@ pubspec.lock
 /build/
 **/ios/build/XCBuildData/
 
-# Directory created by dartdoc
-# If you don't generate documentation locally you can remove this line.
-doc/api/
-
 # Avoid committing generated Javascript files:
 *.dart.js
 *.info.json      # Produced by the --dump-info flag.
@@ -38,9 +30,3 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
-
-# Idea
-*.iml
-*.ipr
-*.iws
-/.idea
