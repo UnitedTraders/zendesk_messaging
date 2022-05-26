@@ -6,7 +6,7 @@ import 'package:zendesk_messaging/user_ids.dart';
 
 class ZendeskMessaging {
   static const MethodChannel _channel = MethodChannel('zendesk_messaging');
-  static const EventChannel _unreadMessageCountChangeEvent =
+  static const EventChannel _unreadMessageCountChangeEventChannel =
       EventChannel('zendesk_messaging/unread_message_count_change');
 
   /// Call method to initialize zendesk. Must be always called first
@@ -46,13 +46,14 @@ class ZendeskMessaging {
   static Future<bool> checkIfNotificationArrivedWhileAppWasClosed() async =>
       await _channel.invokeMethod('checkIfNotificationArrivedWhileAppWasClosed');
 
-  static Stream<int> get unreadMessageCountStream => _unreadMessageCountChangeEvent
+  static Stream<int> get unreadMessageCountStream => _unreadMessageCountChangeEventChannel
       .receiveBroadcastStream()
-      .map((dynamic event) => _parseNativeUnreadeMessageCountEvent(event));
+      .map((dynamic event) => _parseNativeUnreadMessageCountEvent(event));
 
-  static int _parseNativeUnreadeMessageCountEvent(dynamic event) {
+  static int _parseNativeUnreadMessageCountEvent(dynamic event) {
+    final eventToParse = event.toString();
     try {
-      return int.parse(event);
+      return int.parse(eventToParse);
     } catch (e) {
       return 0;
     }
