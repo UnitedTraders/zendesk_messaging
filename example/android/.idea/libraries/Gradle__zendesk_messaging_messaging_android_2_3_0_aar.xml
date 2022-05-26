@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: zendesk.messaging:messaging-android:2.3.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eec738a3fa59dc0f16cc8e9c14f14dde/jetified-messaging-android-2.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eec738a3fa59dc0f16cc8e9c14f14dde/jetified-messaging-android-2.3.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eec738a3fa59dc0f16cc8e9c14f14dde/jetified-messaging-android-2.3.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/zendesk.messaging/messaging-android/2.3.0/a635f4c22190b28e249622405126248a8704ab7f/messaging-android-2.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/zendesk.messaging/messaging-android/2.3.0/89fb7271ede8694fd6e9e81f7206b58261f8c6c6/messaging-android-2.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
