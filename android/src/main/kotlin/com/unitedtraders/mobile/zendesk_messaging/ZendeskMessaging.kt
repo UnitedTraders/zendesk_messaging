@@ -6,10 +6,13 @@ import androidx.annotation.NonNull
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import zendesk.android.Zendesk
+import zendesk.android.events.ZendeskEvent
+import zendesk.android.events.ZendeskEventListener
 import zendesk.messaging.android.DefaultMessagingFactory
 
-class ZendeskMessaging {
+class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: UnreadMessageCountChangeStreamHandler) {
     private var isInitialized: Boolean = false
+    private var isLoggedIn: Boolean = false
 
     fun initializeZendesk(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result, @NonNull activity: Activity) {
         val channelKey: String
@@ -25,6 +28,7 @@ class ZendeskMessaging {
                 channelKey,
                 successCallback = {
                     isInitialized = true
+                    initializeZendeskEventListeners()
                     result.success(null)
                 },
                 failureCallback = {
@@ -32,6 +36,22 @@ class ZendeskMessaging {
                 },
                 DefaultMessagingFactory(),
         )
+    }
+
+    private fun initializeZendeskEventListeners() {
+        val zendeskListener = ZendeskEventListener {
+            zendeskEvent: ZendeskEvent -> when (zendeskEvent) {
+                is ZendeskEvent.UnreadMessageCountChanged -> {
+                    unreadMessageCountChangeStreamHandler.onUnreadMessageCountChangeEvent(zendeskEvent.currentUnreadCount)
+                } is ZendeskEvent.AuthenticationFailed -> {
+
+                } else -> {
+
+                }
+            }
+        }
+
+        Zendesk.instance.addEventListener(zendeskListener)
     }
 
     fun loginUser(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {

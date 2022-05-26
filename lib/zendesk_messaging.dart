@@ -1,11 +1,13 @@
-import 'dart:io' show Platform;
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 import 'package:zendesk_messaging/user_ids.dart';
 
 class ZendeskMessaging {
   static const MethodChannel _channel = MethodChannel('zendesk_messaging');
+  static const EventChannel _unreadMessageCountChangeEvent =
+      EventChannel('zendesk_messaging/unread_message_count_change');
 
   /// Call method to initialize zendesk. Must be always called first
   ///
@@ -40,4 +42,19 @@ class ZendeskMessaging {
   ///
   /// throws PlatformException if something went wrong on platform/zendesk side
   static Future<void> showZendeskView() async => await _channel.invokeMethod('showZendesk');
+
+  static Future<bool> checkIfNotificationArrivedWhileAppWasClosed() async =>
+      await _channel.invokeMethod('checkIfNotificationArrivedWhileAppWasClosed');
+
+  static Stream<int> get unreadMessageCountStream => _unreadMessageCountChangeEvent
+      .receiveBroadcastStream()
+      .map((dynamic event) => _parseNativeUnreadeMessageCountEvent(event));
+
+  static int _parseNativeUnreadeMessageCountEvent(dynamic event) {
+    try {
+      return int.parse(event);
+    } catch (e) {
+      return 0;
+    }
+  }
 }
