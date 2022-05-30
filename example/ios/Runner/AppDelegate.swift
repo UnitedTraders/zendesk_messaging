@@ -1,6 +1,8 @@
 import UIKit
 import Flutter
+import ZendeskSDKMessaging
 
+@available(iOS 10.0, *)
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(

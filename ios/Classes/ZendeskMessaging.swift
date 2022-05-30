@@ -11,8 +11,16 @@ import ZendeskSDKMessaging
 
 class ZendeskMessaging {
     private var isInitialized: Bool = false
+    private var unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler
+    private var zendeskNavigationController: UINavigationController?
+    
+    init(_ unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler) {
+        self.unreadMessageCountStreamHandler = unreadMessageCountStreamHandler
+    }
     
     public func initialize(call: FlutterMethodCall, flutterResult: @escaping FlutterResult) {
+        
+        
         guard let channelKey = call.arguments as? String else {
             flutterResult(ErrorUtils.buildError(title: Constants.IncorrectArguments, details: Constants.InitializeArgumentsErrorDescription))
             return
@@ -24,9 +32,24 @@ class ZendeskMessaging {
                 flutterResult(ErrorUtils.buildError(title: Constants.ZendeskInitializationFailureCode, details: error.localizedDescription))
             case .success(_):
                 self.isInitialized = true
+                self.addZendeskEventObserver()
                 flutterResult(nil)
             }
         })
+    }
+    
+    private func addZendeskEventObserver() {
+        Zendesk.instance?.addEventObserver(self) { event in
+            switch (event) {
+            case .unreadMessageCountChanged(currentUnreadCount: let currentUnreadCount):
+                self.unreadMessageCountStreamHandler.handleNewUnreadMessegeCount(currentUnreadCount)
+                break
+            case .authenticationFailed(error: _):
+                break
+            @unknown default:
+                break
+            }
+        }
     }
     
     public func loginUser(call: FlutterMethodCall, flutterResult: @escaping FlutterResult) {
@@ -71,7 +94,7 @@ class ZendeskMessaging {
             flutterResult(ErrorUtils.buildError(title: Constants.ZendeskShowViewFailureCode, details: Constants.ZendeskNotInitializedDescription))
             return
         }
-        
+    
         guard let zendeskViewController = Zendesk.instance?.messaging?.messagingViewController() else {
             flutterResult(ErrorUtils.buildError(title: Constants.ZendeskShowViewFailureCode, details: "Failed to retreive zendesk messaging view controller"))
             return }
@@ -84,3 +107,5 @@ class ZendeskMessaging {
         flutterResult(nil)
     }
 }
+
+
