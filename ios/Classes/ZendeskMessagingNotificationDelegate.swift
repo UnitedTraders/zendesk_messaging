@@ -68,7 +68,15 @@ public class ZendeskMessagingNotificationDelegate: NSObject, UNUserNotificationC
         switch shouldBeDisplayed {
         case .messagingShouldDisplay:
             PushNotifications.handleTap(userInfo) { viewController in
+                guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController else {
+                    return
+                }
                 
+                guard let nonNullableViewController = viewController else {
+                    return
+                }
+                
+                rootViewController.present(nonNullableViewController, animated: true)
         }
         case .messagingShouldNotDisplay:
             break
