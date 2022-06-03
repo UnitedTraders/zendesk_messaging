@@ -76,6 +76,4 @@ class ZendeskMessagingPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             else -> result.notImplemented()
         }
     }
-
-
 }

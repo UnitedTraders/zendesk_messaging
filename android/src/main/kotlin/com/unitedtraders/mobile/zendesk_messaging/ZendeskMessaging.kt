@@ -12,7 +12,6 @@ import zendesk.messaging.android.DefaultMessagingFactory
 
 class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: UnreadMessageCountChangeStreamHandler) {
     private var isInitialized: Boolean = false
-    private var isLoggedIn: Boolean = false
 
     fun initializeZendesk(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result, @NonNull activity: Activity) {
         val channelKey: String

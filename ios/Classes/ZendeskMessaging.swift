@@ -68,6 +68,7 @@ class ZendeskMessaging {
             case .failure(let error):
                 flutterResult(ErrorUtils.buildError(title: Constants.ZendeskLoginFailureCode, details: error.localizedDescription))
             case .success(let it):
+                NotificationPermissionsHandler.askForPermissionsIfNotDenied(UNUserNotificationCenter.current())
                 flutterResult([Constants.IdKey: it.id, Constants.ExternalIdKey: it.externalId])
             }
         })
