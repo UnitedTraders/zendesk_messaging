@@ -16,5 +16,7 @@ class Constants {
         const val InitializeArgumentsErrorDescription = "channel key as String argument was expected"
         const val IdKey = "id"
         const val ExternalIdKey = "externalId"
+        const val PlatformZendeskErrorCode = "ZendeskError"
+        const val PlatformZendeskErrorDescription = "Something went wrong on zendesk platform side"
     }
 }
