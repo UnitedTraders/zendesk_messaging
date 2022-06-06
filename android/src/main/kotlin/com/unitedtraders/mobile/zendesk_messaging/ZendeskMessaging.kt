@@ -12,7 +12,6 @@ import zendesk.messaging.android.DefaultMessagingFactory
 
 class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: UnreadMessageCountChangeStreamHandler) {
     private var isInitialized: Boolean = false
-    private var isLoggedIn: Boolean = false
 
     fun initializeZendesk(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result, @NonNull activity: Activity) {
         val channelKey: String
@@ -23,7 +22,8 @@ class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: Unread
             return
         }
 
-        Zendesk.initialize(
+        try {
+            Zendesk.initialize(
                 activity,
                 channelKey,
                 successCallback = {
@@ -32,10 +32,17 @@ class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: Unread
                     result.success(null)
                 },
                 failureCallback = {
-                    result.error(Constants.ZendeskInitializationFailureCode, "Something went wrong on zendesk initializing stage", it.localizedMessage)
+                    result.error(
+                        Constants.ZendeskInitializationFailureCode,
+                        "Something went wrong on zendesk initializing stage",
+                        it.localizedMessage
+                    )
                 },
                 DefaultMessagingFactory(),
-        )
+            )
+        } catch (e: Exception) {
+            result.error(Constants.PlatformZendeskErrorCode, Constants.PlatformZendeskErrorDescription, e.localizedMessage)
+        }
     }
 
     private fun initializeZendeskEventListeners() {
@@ -68,15 +75,28 @@ class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: Unread
             return
         }
 
-        Zendesk.instance.loginUser(
+        try {
+            Zendesk.instance.loginUser(
                 jwt,
                 successCallback = {
-                    result.success(mapOf(Constants.IdKey to it.id, Constants.ExternalIdKey to it.externalId))
+                    result.success(
+                        mapOf(
+                            Constants.IdKey to it.id,
+                            Constants.ExternalIdKey to it.externalId
+                        )
+                    )
                 },
                 failureCallback = {
-                    result.error(Constants.ZendeskLoginFailureCode, "Something went wrong on zendesk login stage", it.localizedMessage)
+                    result.error(
+                        Constants.ZendeskLoginFailureCode,
+                        "Something went wrong on zendesk login stage",
+                        it.localizedMessage
+                    )
                 },
-        )
+            )
+        } catch (e: Exception) {
+            result.error(Constants.PlatformZendeskErrorCode, Constants.PlatformZendeskErrorDescription, e.localizedMessage)
+        }
     }
 
     fun logoutUser(@NonNull result: MethodChannel.Result) {
@@ -85,14 +105,22 @@ class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: Unread
             return
         }
 
-        Zendesk.instance.logoutUser(
+        try {
+            Zendesk.instance.logoutUser(
                 successCallback = {
                     result.success(null)
                 },
                 failureCallback = {
-                    result.error(Constants.ZendeskLogoutFailureCode, "Something went wrong on zendesk logout stage", it.localizedMessage)
+                    result.error(
+                        Constants.ZendeskLogoutFailureCode,
+                        "Something went wrong on zendesk logout stage",
+                        it.localizedMessage
+                    )
                 },
-        )
+            )
+        } catch (e: Exception) {
+            result.error(Constants.PlatformZendeskErrorCode, Constants.PlatformZendeskErrorDescription, e.localizedMessage)
+        }
     }
 
     fun showZendesk(@NonNull result: MethodChannel.Result, @NonNull activity: Activity) {
@@ -101,7 +129,11 @@ class ZendeskMessaging(private var unreadMessageCountChangeStreamHandler: Unread
             return
         }
 
-        Zendesk.instance.messaging.showMessaging(activity, Intent.FLAG_ACTIVITY_NEW_TASK)
-        result.success(null)
+        try {
+            Zendesk.instance.messaging.showMessaging(activity, Intent.FLAG_ACTIVITY_NEW_TASK)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error(Constants.PlatformZendeskErrorCode, Constants.PlatformZendeskErrorDescription, e.localizedMessage)
+        }
     }
 }

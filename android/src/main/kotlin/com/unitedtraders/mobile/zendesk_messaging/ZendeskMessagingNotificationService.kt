@@ -1,7 +1,5 @@
 package com.unitedtraders.mobile.zendesk_messaging
 
-import android.app.ActivityManager
-import android.content.Context
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import zendesk.messaging.android.push.PushNotifications
@@ -20,5 +18,9 @@ class ZendeskMessagingNotificationService: FirebaseMessagingService() {
                 // This push does not belong to Messaging
             }
         }
+    }
+
+    override fun onNewToken(token: String) {
+        PushNotifications.updatePushNotificationToken(token)
     }
 }

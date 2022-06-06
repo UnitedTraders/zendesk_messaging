@@ -43,9 +43,6 @@ class ZendeskMessaging {
   /// throws PlatformException if something went wrong on platform/zendesk side
   static Future<void> showZendeskView() async => await _channel.invokeMethod('showZendesk');
 
-  static Future<bool> checkIfNotificationArrivedWhileAppWasClosed() async =>
-      await _channel.invokeMethod('checkIfNotificationArrivedWhileAppWasClosed');
-
   static Stream<int> get unreadMessageCountStream => _unreadMessageCountChangeEventChannel
       .receiveBroadcastStream()
       .map((dynamic event) => _parseNativeUnreadMessageCountEvent(event));
