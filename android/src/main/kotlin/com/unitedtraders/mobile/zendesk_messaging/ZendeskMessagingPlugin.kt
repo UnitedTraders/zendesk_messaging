@@ -18,33 +18,43 @@ class ZendeskMessagingPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
-    private lateinit var eventChannel: EventChannel
+    private lateinit var unreadMessageCountEventChannel: EventChannel
+    private lateinit var urlToHandleInAppEventChannel: EventChannel
     private lateinit var unreadMessageCountChangeStreamHandler: UnreadMessageCountChangeStreamHandler
+    private lateinit var urlToHandleInAppStreamHandler: UrlToHandleInAppStreamHandler
     private lateinit var zendeskMessaging: ZendeskMessaging
 
-    private var zendeskUnreadMessageCountStreamChannelNave =
+    private var zendeskUnreadMessageCountStreamChannelName =
         "zendesk_messaging/unread_message_count_change"
+    private var zendeskUrlToHandleInAppStreamChannelName = "zendesk_messaging/url_to_handle_in_app"
     private var zendeskMessagingChannelName = "zendesk_messaging"
 
     var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, zendeskMessagingChannelName)
-        eventChannel = EventChannel(
+        unreadMessageCountEventChannel = EventChannel(
             flutterPluginBinding.binaryMessenger,
-            zendeskUnreadMessageCountStreamChannelNave
+            zendeskUnreadMessageCountStreamChannelName,
+        )
+        urlToHandleInAppEventChannel = EventChannel(
+            flutterPluginBinding.binaryMessenger,
+            zendeskUrlToHandleInAppStreamChannelName,
         )
 
         unreadMessageCountChangeStreamHandler = UnreadMessageCountChangeStreamHandler()
-        zendeskMessaging = ZendeskMessaging(unreadMessageCountChangeStreamHandler)
+        urlToHandleInAppStreamHandler = UrlToHandleInAppStreamHandler()
 
-        eventChannel.setStreamHandler(unreadMessageCountChangeStreamHandler)
+        unreadMessageCountEventChannel.setStreamHandler(unreadMessageCountChangeStreamHandler)
+        urlToHandleInAppEventChannel.setStreamHandler(urlToHandleInAppStreamHandler)
+
+        zendeskMessaging = ZendeskMessaging(unreadMessageCountChangeStreamHandler, urlToHandleInAppStreamHandler)
         channel.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-        eventChannel.setStreamHandler(null)
+        unreadMessageCountEventChannel.setStreamHandler(null)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
