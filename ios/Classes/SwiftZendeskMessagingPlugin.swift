@@ -7,13 +7,16 @@ public class SwiftZendeskMessagingPlugin: NSObject, FlutterPlugin {
     
     private var zendeskMessaging: ZendeskMessaging
     private var unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler
+    private var urlToHandleInAppStreamHandler: UrlToHandleInAppStreamHandler
     
     private let zendeskMessagingPluginChannelName: String = "zendesk_messaging"
     private let zendeskUnreadMessageCountStreamChannelName: String = "zendesk_messaging/unread_message_count_change"
+    private let zendeskUrlToHandleInAppStreamChannelName = "zendesk_messaging/url_to_handle_in_app"
     
     public override init() {
         unreadMessageCountStreamHandler = UnreadMessageCountStreamHandler()
-        zendeskMessaging = ZendeskMessaging(unreadMessageCountStreamHandler)
+        urlToHandleInAppStreamHandler = UrlToHandleInAppStreamHandler()
+        zendeskMessaging = ZendeskMessaging(unreadMessageCountStreamHandler, urlToHandleInAppStreamHandler)
         
         super.init()
         initializeNotifications()
@@ -21,11 +24,13 @@ public class SwiftZendeskMessagingPlugin: NSObject, FlutterPlugin {
         
     public static func register(with registrar: FlutterPluginRegistrar) {
         let pluginInstance = SwiftZendeskMessagingPlugin()
-        let channel = FlutterMethodChannel(name: "zendesk_messaging", binaryMessenger:       registrar.messenger())
-        let streamChannel = FlutterEventChannel(name: "zendesk_messaging/unread_message_count_change", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: pluginInstance.zendeskMessagingPluginChannelName, binaryMessenger:       registrar.messenger())
+        let unreadMessageCountStreamChannel = FlutterEventChannel(name: pluginInstance.zendeskUnreadMessageCountStreamChannelName, binaryMessenger: registrar.messenger())
+        let urlToHandleInAppStreamChannel = FlutterEventChannel(name: pluginInstance.zendeskUrlToHandleInAppStreamChannelName, binaryMessenger: registrar.messenger())
         
         registrar.addMethodCallDelegate(pluginInstance, channel: channel)
-        streamChannel.setStreamHandler(pluginInstance.unreadMessageCountStreamHandler)
+        unreadMessageCountStreamChannel.setStreamHandler(pluginInstance.unreadMessageCountStreamHandler)
+        urlToHandleInAppStreamChannel.setStreamHandler(pluginInstance.urlToHandleInAppStreamHandler)
         
         registrar.addApplicationDelegate(pluginInstance)
     }

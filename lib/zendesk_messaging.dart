@@ -8,11 +8,16 @@ class ZendeskMessaging {
   static const MethodChannel _channel = MethodChannel('zendesk_messaging');
   static const EventChannel _unreadMessageCountChangeEventChannel =
       EventChannel('zendesk_messaging/unread_message_count_change');
+  static const EventChannel _urlToHandleInAppEventChannel = EventChannel('zendesk_messaging/url_to_handle_in_app');
 
   /// Call method to initialize zendesk. Must be always called first
   ///
   /// throws PlatformException if something went wrong on platform/zendesk side
-  static Future<void> initializeZendesk({String? androidChannelKey, String? iosChannelKey}) async {
+  static Future<void> initializeZendesk({
+    String? androidChannelKey,
+    String? iosChannelKey,
+    bool shouldInterceptUrlHandling = false,
+  }) async {
     String? channelKey;
     if (Platform.isIOS) {
       channelKey = iosChannelKey;
@@ -21,7 +26,10 @@ class ZendeskMessaging {
       channelKey = androidChannelKey;
     }
 
-    await _channel.invokeMethod('zendeskInitialize', channelKey);
+    await _channel.invokeMethod('zendeskInitialize', {
+      'channelKey': channelKey,
+      'shouldInterceptUrlHandling': shouldInterceptUrlHandling,
+    });
   }
 
   /// Attempt to login user. Call only after initializing zendesk complete
@@ -43,9 +51,16 @@ class ZendeskMessaging {
   /// throws PlatformException if something went wrong on platform/zendesk side
   static Future<void> showZendeskView() async => await _channel.invokeMethod('showZendesk');
 
+  /// Stream to get count of unreadMessage
   static Stream<int> get unreadMessageCountStream => _unreadMessageCountChangeEventChannel
       .receiveBroadcastStream()
       .map((dynamic event) => _parseNativeUnreadMessageCountEvent(event));
+
+  /// Stream to intercept url's inside zendesk chat to handle them in app
+  ///
+  /// To use it set [shouldInterceptUrlHandling] to "true" inside "initializeZendesk" method
+  static Stream<String> get urlToHandleInAppStream =>
+      _urlToHandleInAppEventChannel.receiveBroadcastStream().map((event) => event.toString());
 
   static int _parseNativeUnreadMessageCountEvent(dynamic event) {
     final eventToParse = event.toString();

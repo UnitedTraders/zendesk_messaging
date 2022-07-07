@@ -12,16 +12,26 @@ import ZendeskSDKMessaging
 class ZendeskMessaging {
     private var isInitialized: Bool = false
     private var unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler
-    private var zendeskNavigationController: UINavigationController?
+    private var urlToHandleInAppStreamHandler: UrlToHandleInAppStreamHandler
+    private var zendeskUiViewController: UIViewController?
     
-    init(_ unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler) {
+    init(_ unreadMessageCountStreamHandler: UnreadMessageCountStreamHandler, _ urlToHandleInAppStreamHandler: UrlToHandleInAppStreamHandler) {
         self.unreadMessageCountStreamHandler = unreadMessageCountStreamHandler
+        self.urlToHandleInAppStreamHandler = urlToHandleInAppStreamHandler
     }
     
     public func initialize(call: FlutterMethodCall, flutterResult: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? Dictionary<String, NSObject> else {
+            flutterResult(ErrorUtils.buildError(title: Constants.IncorrectArguments, details: Constants.InitializeArgumentsErrorDescription))
+            return
+        }
         
+        guard let channelKey = arguments[Constants.ChannelKey] as? String else {
+            flutterResult(ErrorUtils.buildError(title: Constants.IncorrectArguments, details: Constants.InitializeArgumentsErrorDescription))
+            return
+        }
         
-        guard let channelKey = call.arguments as? String else {
+        guard let shouldInterceptUrlHandling = arguments[Constants.ShouldInterceptUrlHandlingKey] as? Bool else {
             flutterResult(ErrorUtils.buildError(title: Constants.IncorrectArguments, details: Constants.InitializeArgumentsErrorDescription))
             return
         }
@@ -32,13 +42,13 @@ class ZendeskMessaging {
                 flutterResult(ErrorUtils.buildError(title: Constants.ZendeskInitializationFailureCode, details: error.localizedDescription))
             case .success(_):
                 self.isInitialized = true
-                self.addZendeskEventObserver()
+                self.addZendeskEventObserver(shouldInterceptUrlHandling)
                 flutterResult(nil)
             }
         })
     }
     
-    private func addZendeskEventObserver() {
+    private func addZendeskEventObserver(_ shouldInterceptUrlHandling: Bool) {
         Zendesk.instance?.addEventObserver(self) { event in
             switch (event) {
             case .unreadMessageCountChanged(currentUnreadCount: let currentUnreadCount):
@@ -49,6 +59,10 @@ class ZendeskMessaging {
             @unknown default:
                 break
             }
+        }
+        
+        if (shouldInterceptUrlHandling) {
+            Messaging.delegate = self
         }
     }
     
@@ -96,7 +110,7 @@ class ZendeskMessaging {
             return
         }
     
-        guard let zendeskViewController = Zendesk.instance?.messaging?.messagingViewController() else {
+        guard let zendeskUiViewController = Zendesk.instance?.messaging?.messagingViewController() else {
             flutterResult(ErrorUtils.buildError(title: Constants.ZendeskShowViewFailureCode, details: "Failed to retreive zendesk messaging view controller"))
             return }
         guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController else {
@@ -104,9 +118,20 @@ class ZendeskMessaging {
             return
         }
         
-        rootViewController.present(zendeskViewController, animated: true, completion: nil)
+        rootViewController.present(zendeskUiViewController, animated: true, completion: nil)
         flutterResult(nil)
     }
 }
+
+extension ZendeskMessaging : MessagingDelegate {
+    func messaging(_ messaging: Messaging, shouldHandleURL url: URL, from source: URLSource) -> Bool {
+        urlToHandleInAppStreamHandler.handleUrlToHandleInAppEvent(url.absoluteString)
+        UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true, completion: nil)
+        
+        return false
+    }
+}
+
+
 
 

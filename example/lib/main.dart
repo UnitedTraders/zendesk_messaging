@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:zendesk_messaging/zendesk_messaging.dart';
 
@@ -14,15 +16,30 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late bool _isInitialized;
+  late StreamSubscription<String> _urlToHandleInAppStreamSubscription;
   late TextEditingController _channelKeyController;
   late TextEditingController _jwtController;
+
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     _isInitialized = false;
     _channelKeyController = TextEditingController();
     _jwtController = TextEditingController();
+
+    _urlToHandleInAppStreamSubscription = ZendeskMessaging.urlToHandleInAppStream.listen((event) {
+      _scaffoldMessengerKey.currentState!.showSnackBar(SnackBar(content: Text(event)));
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _urlToHandleInAppStreamSubscription.cancel();
+    _channelKeyController.dispose();
+    _jwtController.dispose();
+    super.dispose();
   }
 
   String? errorText;
@@ -30,6 +47,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: _scaffoldMessengerKey,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
@@ -67,6 +85,7 @@ class _MyAppState extends State<MyApp> {
       await ZendeskMessaging.initializeZendesk(
         androidChannelKey: _channelKeyController.value.text,
         iosChannelKey: _channelKeyController.value.text,
+        shouldInterceptUrlHandling: false
       );
 
       setState(() {
