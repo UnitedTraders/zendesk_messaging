@@ -118,17 +118,49 @@ class ZendeskMessaging {
             return
         }
         
+        
+        zendeskUiViewController.view.addSubview(getCloseButton(zendeskUiViewController: zendeskUiViewController))
+        
         rootViewController.present(zendeskUiViewController, animated: true, completion: nil)
         flutterResult(nil)
+    }
+    
+    private func getCloseButton(zendeskUiViewController: UIViewController) -> UIButton {
+        let closeButton = UIButton()
+        
+        closeButton.frame = CGRect(x: zendeskUiViewController.view.frame.size.width - 40, y: 20, width: 30, height: 30)
+        closeButton.layer.cornerRadius = 15
+        closeButton.setTitle("x", for: .normal)
+        closeButton.setAttributedTitle(NSAttributedString(string: "x", attributes: [NSAttributedString.Key.font: UIFont(name: "Arial Rounded MT Bold", size: 18) as Any, NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.5)]), for: .normal)
+        closeButton.contentVerticalAlignment = .center
+        closeButton.contentHorizontalAlignment = .center
+        closeButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
+        closeButton.clipsToBounds = true
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = closeButton.bounds
+        blurEffectView.isUserInteractionEnabled = false
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        closeButton.addSubview(blurEffectView)
+        closeButton.backgroundColor = UIColor.black.withAlphaComponent(0.06)
+        closeButton.addTarget(self, action: #selector(closeZendesk), for: .touchUpInside)
+        
+        return closeButton
     }
 }
 
 extension ZendeskMessaging : MessagingDelegate {
     func messaging(_ messaging: Messaging, shouldHandleURL url: URL, from source: URLSource) -> Bool {
         urlToHandleInAppStreamHandler.handleUrlToHandleInAppEvent(url.absoluteString)
-        UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true, completion: nil)
+        closeZendesk()
         
         return false
+    }
+    
+    @objc private func closeZendesk() {
+        UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
 
