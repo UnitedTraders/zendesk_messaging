@@ -117,10 +117,14 @@ class ZendeskMessaging {
             flutterResult(ErrorUtils.buildError(title: Constants.ZendeskShowViewFailureCode, details: "Failed to retrieve flutter root view controller"))
             return
         }
-        
+                
+        for val in zendeskUiViewController.view.subviews {
+            if(type(of: val) == UINavigationBar.self) {
+                val.removeFromSuperview()
+            }
+        }
         
         zendeskUiViewController.view.addSubview(getCloseButton(zendeskUiViewController: zendeskUiViewController))
-        
         rootViewController.present(zendeskUiViewController, animated: true, completion: nil)
         flutterResult(nil)
     }
@@ -130,11 +134,10 @@ class ZendeskMessaging {
         
         closeButton.frame = CGRect(x: zendeskUiViewController.view.frame.size.width - 40, y: 20, width: 30, height: 30)
         closeButton.layer.cornerRadius = 15
-        closeButton.setTitle("x", for: .normal)
-        closeButton.setAttributedTitle(NSAttributedString(string: "x", attributes: [NSAttributedString.Key.font: UIFont(name: "Arial Rounded MT Bold", size: 18) as Any, NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.5)]), for: .normal)
+        closeButton.setAttributedTitle(NSAttributedString(string: "×", attributes: [NSAttributedString.Key.font: UIFont(name: "AvenirNext-DemiBold", size: 18) as Any, NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.5)]), for: .normal)
         closeButton.contentVerticalAlignment = .center
         closeButton.contentHorizontalAlignment = .center
-        closeButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
+        closeButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         closeButton.clipsToBounds = true
         
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)
